@@ -47,3 +47,29 @@ async def add_contact(new_contact: ContactModel):
         "Success":"True",
         "message":"New contact added"
     }
+    
+@app.put("/api/contacts")
+# Recibe el id del contacto a actualizar, y los nuevos datos del contacto
+async def update_contact(id_contact: str, new_contact: ContactModel):
+    contacts = md.read_contacts() #Leemos la lista actual de contactos
+    
+    for index, contact in enumerate(contacts): #El enumerate() recorre la lista contacts y en cada vuelta te da el index y el contacto
+        if contact["id"] == id_contact:
+            contacts[index] = new_contact.dict() #Si encuentra el id, lo reemplaza por el nuevo (convertido a diccionario)
+            
+            if new_contact.name == "":
+                contacts[index]["name"] = contact["name"] #Condicion para conservar el nombre si el nuevo está vacío
+                
+            if new_contact.phone == "":
+                contacts[index]["phone"] = contact["phone"] #Condicion para conservar el numero si el nuevo está vacío
+            
+            md.write_contacts(contacts) #Guardamos la lista actualizada en el json
+            
+            return{
+                "succes":"true",
+                "message":"Contact Updated"
+            } # Mensaje de exito default
+                    
+    raise HTTPException(status_code=404, detail="Contacto no encontrado") #Retornamos un error con HTTPException
+        
+    
