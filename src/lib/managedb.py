@@ -13,3 +13,8 @@ class ManageDB:
         with open(self.__address_file, "r") as data:
             return json.loads(data.read()) #json.load para convertirlo a json    
         
+    #Abrimos el json de contactos en modo escritura, y usamos json.dumps para convertir la lista a json.(para recibir el string y guardarlo)
+    def write_contacts(self, new_data):
+        with open(self.__address_file, "w") as data:
+            data.write(json.dumps(new_data))
+        
